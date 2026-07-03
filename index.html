@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Darslar CMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="ChatGPT Image Jul 3, 2026, 09_25_30 AM.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+    <!-- Background Blobs -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loadingScreen" class="loading-screen">
+    <div class="loading-logo"><i class="fab fa-youtube"></i><span>DarslarCMS</span></div>
+    <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+    <p class="loading-text">Tizim yuklanmoqda...</p>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-left">
+        <button class="icon-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+        <div class="logo"><i class="fab fa-youtube"></i><span>Darslar<b>CMS</b></span></div>
+    </div>
+    <div class="nav-center">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Video qidirish..." autocomplete="off">
+            <button class="search-clear hidden" id="searchClear"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    <div class="nav-right">
+        <button class="icon-btn" id="themeToggle" title="Tema"><i class="fas fa-sun"></i></button>
+        <button class="login-btn" id="userLoginBtn"><i class="fas fa-user-plus"></i> Ro'yxat</button>
+        <button class="login-btn" id="adminLoginBtn"><i class="fas fa-lock"></i> Admin</button>
+        <button class="add-video-btn hidden" id="adminAddVideoBtn"><i class="fas fa-plus"></i> Video</button>
+        <div class="admin-badge hidden" id="adminBadge">
+            <i class="fas fa-shield-alt"></i> Admin
+            <button class="icon-btn sm" id="adminPanelBtn"><i class="fas fa-th-large"></i></button>
+            <button class="icon-btn sm" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+        <div class="user-badge hidden" id="userBadge">
+            <img class="avatar" id="navAvatar" src="" alt="u">
+            <span id="navUsername"></span>
+            <button class="icon-btn sm" id="userProfileBtn"><i class="fas fa-user"></i></button>
+            <button class="icon-btn sm" id="userLogoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="main-wrap">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-link active" data-category="all"><i class="fas fa-home"></i><span>Asosiy</span></a>
+            <div id="categoryLinks"></div>
+            <hr>
+            <a href="#" class="sidebar-link" id="sidebarTrending"><i class="fas fa-fire"></i><span>Trending</span></a>
+            <a href="#" class="sidebar-link" id="sidebarLiked"><i class="fas fa-heart"></i><span>Yoqqanlar</span></a>
+            <a href="#" class="sidebar-link" id="sidebarSaved"><i class="fas fa-bookmark"></i><span>Saqlanganlar</span></a>
+            <a href="#" class="sidebar-link" id="sidebarHistory"><i class="fas fa-history"></i><span>Tarix</span></a>
+        </div>
+        <div class="sidebar-bottom">
+            <hr>
+            <a href="#" class="sidebar-link" id="sidebarSettings"><i class="fas fa-cog"></i><span>Sozlamalar</span></a>
+        </div>
+    </aside>
+    <main class="content" id="mainContent">
+        <div class="sort-bar">
+            <div class="sort-chips">
+                <button class="chip active" data-sort="new">🆕 Yangi</button>
+                <button class="chip" data-sort="old">📅 Eski</button>
+                <button class="chip" data-sort="popular">🔥 Mashhur</button>
+                <button class="chip" data-sort="liked">❤️ Ko'p laykli</button>
+            </div>
+        </div>
+        <div class="section-header">
+            <h2 id="sectionTitle">Barcha videolar</h2>
+            <span class="video-count" id="videoCountBadge">0 ta video</span>
+        </div>
+        <!-- VIDEO PLAYER -->
+        <div id="playerSection" class="player-section hidden">
+            <div class="player-main">
+                <div class="player-wrapper">
+                    <video id="mainVideo" controls></video>
+                    <iframe id="youtubeFrame" class="hidden" allowfullscreen></iframe>
+                </div>
+                <div class="player-meta">
+                    <h1 id="playerTitle"></h1>
+                    <div class="player-bar">
+                        <div class="player-stats">
+                            <span id="playerCatBadge" class="cat-pill"></span>
+                            <span id="playerViews"><i class="fas fa-eye"></i> 0</span>
+                            <span id="playerDuration"><i class="fas fa-clock"></i> --</span>
+                        </div>
+                        <div class="player-actions">
+                            <button class="action-pill" id="likeBtn"><i class="far fa-thumbs-up"></i> <span id="likeCountEl">0</span></button>
+                            <button class="action-pill" id="dislikeBtn"><i class="far fa-thumbs-down"></i></button>
+                            <button class="action-pill" id="saveBtn"><i class="far fa-bookmark"></i> Saqlash</button>
+                            <button class="action-pill" id="downloadBtn"><i class="fas fa-download"></i> Yuklab olish</button>
+                            <button class="action-pill danger" id="closePlayerBtn"><i class="fas fa-times"></i> Yopish</button>
+                        </div>
+                    </div>
+                    <div class="video-options-bar">
+                        <label class="toggle-opt"><input type="checkbox" id="autoplayToggle"> <span>Autoplay</span></label>
+                        <label class="toggle-opt"><input type="checkbox" id="loopToggle"> <span>Loop</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="comments-section">
+                <h3><i class="fas fa-comments"></i> Kommentariyalar (<span id="commentCount">0</span>)</h3>
+                <div class="comment-form" id="commentFormWrap">
+                    <img class="avatar sm" id="commentAvatar" src="" alt="u">
+                    <div class="comment-input-group">
+                        <input type="text" id="commentInput" placeholder="Kommentariya yozing..." class="custom-input">
+                        <button class="submit-btn sm" id="sendCommentBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <div id="commentsList" class="comments-list"></div>
+            </div>
+        </div>
+        <!-- VIDEO GRID -->
+        <div class="video-grid" id="videoGrid"></div>
+        <!-- SKELETON -->
+        <div class="video-grid hidden" id="skeletonGrid">
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+            <div class="skeleton-card"><div class="sk sk-thumb"></div><div class="sk sk-title"></div><div class="sk sk-sub"></div></div>
+        </div>
+        <!-- EMPTY STATE -->
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon"><i class="fas fa-video-slash"></i></div>
+            <h3>Hech narsa topilmadi</h3>
+            <p>Qidiruv yoki filter natijasi bo'sh</p>
+        </div>
+    </main>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div id="adminDashboard" class="dashboard hidden">
+    <div class="dash-header">
+        <div class="dash-logo"><i class="fab fa-youtube"></i> Admin Panel</div>
+        <button class="icon-btn" id="closeDashboard"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-layout">
+        <nav class="dash-nav">
+            <button class="dash-nav-btn active" data-panel="stats"><i class="fas fa-chart-bar"></i> Statistika</button>
+            <button class="dash-nav-btn" data-panel="videos"><i class="fas fa-film"></i> Videolar</button>
+            <button class="dash-nav-btn" data-panel="categories"><i class="fas fa-folder"></i> Kategoriyalar</button>
+            <button class="dash-nav-btn" data-panel="users"><i class="fas fa-users"></i> Foydalanuvchilar</button>
+            <button class="dash-nav-btn" data-panel="settings"><i class="fas fa-cog"></i> Sozlamalar</button>
+        </nav>
+        <div class="dash-content" id="dashContent">
+            <!-- STATS PANEL -->
+            <div class="dash-panel active" id="panel-stats">
+                <h2 class="panel-title"><i class="fas fa-chart-bar"></i> Statistika</h2>
+                <div class="stats-grid">
+                    <div class="stat-card blue"><i class="fas fa-film"></i><div><span id="statTotalVideos">0</span><p>Jami videolar</p></div></div>
+                    <div class="stat-card green"><i class="fas fa-users"></i><div><span id="statTotalUsers">0</span><p>Foydalanuvchilar</p></div></div>
+                    <div class="stat-card red"><i class="fas fa-eye"></i><div><span id="statTotalViews">0</span><p>Jami ko'rishlar</p></div></div>
+                    <div class="stat-card purple"><i class="fas fa-heart"></i><div><span id="statTotalLikes">0</span><p>Jami layklar</p></div></div>
+                    <div class="stat-card orange"><i class="fas fa-clock"></i><div><span id="statWatchTime">0 daq</span><p>Watch time</p></div></div>
+                    <div class="stat-card teal"><i class="fas fa-folder"></i><div><span id="statTotalCats">0</span><p>Kategoriyalar</p></div></div>
+                </div>
+                <div class="panel-row">
+                    <div class="panel-card"><h3><i class="fas fa-fire"></i> Eng mashhur</h3><div id="topVideosList"></div></div>
+                    <div class="panel-card"><h3><i class="fas fa-chart-pie"></i> Kategoriya statistikasi</h3><div id="catStatsList"></div></div>
+                </div>
+            </div>
+            <!-- VIDEOS PANEL -->
+            <div class="dash-panel" id="panel-videos">
+                <div class="panel-toolbar">
+                    <h2 class="panel-title"><i class="fas fa-film"></i> Videolar</h2>
+                    <button class="dash-add-btn" id="dashAddVideoBtn"><i class="fas fa-plus"></i> Yangi</button>
+                </div>
+                <div class="dash-search-bar">
+                    <input type="text" id="dashVideoSearch" class="custom-input sm" placeholder="Qidirish...">
+                    <select id="dashVideoCatFilter" class="mini-select"><option value="all">Barcha kategoriyalar</option></select>
+                    <select id="dashVideoStatusFilter" class="mini-select">
+                        <option value="all">Barcha statuslar</option>
+                        <option value="active">Faol</option>
+                        <option value="inactive">Nofaol</option>
+                    </select>
+                </div>
+                <div class="dash-table-wrap">
+                    <table class="dash-table">
+                        <thead><tr><th>Thumb</th><th>Sarlavha</th><th>Kategoriya</th><th>Ko'rishlar</th><th>Layklar</th><th>Davomiylik</th><th>Status</th><th>Ko'rinish</th><th>Amallar</th></tr></thead>
+                        <tbody id="dashVideoBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- CATEGORIES PANEL -->
+            <div class="dash-panel" id="panel-categories">
+                <div class="panel-toolbar">
+                    <h2 class="panel-title"><i class="fas fa-folder"></i> Kategoriyalar</h2>
+                    <button class="dash-add-btn" id="dashAddCatBtn"><i class="fas fa-plus"></i> Yangi</button>
+                </div>
+                <div class="cat-cards-grid" id="catAdminGrid"></div>
+            </div>
+            <!-- USERS PANEL -->
+            <div class="dash-panel" id="panel-users">
+                <h2 class="panel-title"><i class="fas fa-users"></i> Foydalanuvchilar</h2>
+                <div class="dash-table-wrap">
+                    <table class="dash-table">
+                        <thead><tr><th>Avatar</th><th>Ism</th><th>Login</th><th>Rol</th><th>Status</th><th>Ko'rishlar</th><th>Layklar</th><th>Amallar</th></tr></thead>
+                        <tbody id="dashUserBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- SETTINGS PANEL -->
+            <div class="dash-panel" id="panel-settings">
+                <h2 class="panel-title"><i class="fas fa-cog"></i> Sozlamalar</h2>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-shield-alt"></i> Admin paroli</h3>
+                        <form id="changePassForm">
+                            <input type="password" id="oldPass" class="custom-input" placeholder="Eski parol">
+                            <input type="password" id="newPass" class="custom-input" placeholder="Yangi parol" style="margin-top:10px">
+                            <button type="submit" class="dash-add-btn" style="margin-top:10px"><i class="fas fa-save"></i> Saqlash</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-database"></i> Ma'lumotlar</h3>
+                        <button class="dash-add-btn" id="backupBtn"><i class="fas fa-download"></i> Backup (JSON)</button>
+                        <button class="dash-add-btn" id="restoreBtn" style="margin-top:8px"><i class="fas fa-upload"></i> Restore</button>
+                        <input type="file" id="restoreFile" accept=".json" class="hidden">
+                        <button class="dash-add-btn danger" id="resetSystemBtn" style="margin-top:8px"><i class="fas fa-redo"></i> Tizimni tozalash</button>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-video"></i> Video sozlamalari</h3>
+                        <label class="settings-row"><span>Hajm cheklash (MB):</span><input type="number" id="maxSizeMb" class="mini-input" value="500" min="10" max="2000"></label>
+                        <label class="settings-row"><span>Default Autoplay:</span><input type="checkbox" id="settingAutoplay"></label>
+                        <label class="settings-row"><span>Download ruxsati:</span><input type="checkbox" id="settingDownload" checked></label>
+                        <button class="dash-add-btn" id="saveSettingsBtn" style="margin-top:10px"><i class="fas fa-save"></i> Saqlash</button>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-palette"></i> Dizayn</h3>
+                        <label class="settings-row"><span>Asosiy rang:</span><input type="color" id="accentColor" value="#ff0000"></label>
+                        <button class="dash-add-btn" id="applyAccentBtn" style="margin-top:8px"><i class="fas fa-paint-brush"></i> Qo'llash</button>
+                        <button class="dash-add-btn danger" id="clearCacheBtn" style="margin-top:8px"><i class="fas fa-broom"></i> Cache tozalash</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- ADMIN LOGIN -->
+<div id="adminLoginModal" class="modal">
+    <div class="modal-box">
+        <button class="modal-close" data-close="adminLoginModal"><i class="fas fa-times"></i></button>
+        <div class="modal-icon admin"><i class="fas fa-shield-alt"></i></div>
+        <h2>Admin Kirish</h2>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label class="custom-label"><i class="fas fa-user"></i> ID</label>
+                <input type="text" id="adminIdInput" class="custom-input" placeholder="Admin ID" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="custom-label"><i class="fas fa-lock"></i> Parol</label>
+                <div class="pass-wrap">
+                    <input type="password" id="adminPassInput" class="custom-input" placeholder="Parol" required>
+                    <button type="button" class="eye-btn" data-target="adminPassInput"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="wrong-alert hidden" id="adminWrongAlert"><i class="fas fa-exclamation-circle"></i> ID yoki parol xato!</div>
+            <button type="submit" class="submit-btn full"><i class="fas fa-sign-in-alt"></i> Kirish</button>
+            <p class="hint-text">Default: <b>XXXXXXXX</b> / <b>XXXXXXXXXXXXX</b></p>
+        </form>
+    </div>
+</div>
+
+<!-- USER REGISTER/LOGIN -->
+<div id="userRegisterModal" class="modal">
+    <div class="modal-box">
+        <button class="modal-close" data-close="userRegisterModal"><i class="fas fa-times"></i></button>
+        <div class="modal-icon user"><i class="fas fa-user-plus"></i></div>
+        <h2>Foydalanuvchi</h2>
+        <div class="tab-btns">
+            <button class="tab-btn active" data-tab="register">Ro'yxat</button>
+            <button class="tab-btn" data-tab="login">Kirish</button>
+        </div>
+        <form id="userRegisterForm" class="tab-content active">
+            <div class="form-group"><label class="custom-label">Ism</label><input type="text" id="regName" class="custom-input" placeholder="Ismingiz" required></div>
+            <div class="form-group"><label class="custom-label">Login</label><input type="text" id="regLogin" class="custom-input" placeholder="login_name" required></div>
+            <div class="form-group">
+                <label class="custom-label">Parol</label>
+                <div class="pass-wrap">
+                    <input type="password" id="regPass" class="custom-input" placeholder="Min 4 ta belgi" required>
+                    <button type="button" class="eye-btn" data-target="regPass"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn full"><i class="fas fa-user-plus"></i> Ro'yxatdan o'tish</button>
+        </form>
+        <form id="userLoginForm" class="tab-content">
+            <div class="form-group"><label class="custom-label">Login</label><input type="text" id="loginLogin" class="custom-input" placeholder="login_name" required></div>
+            <div class="form-group">
+                <label class="custom-label">Parol</label>
+                <div class="pass-wrap">
+                    <input type="password" id="loginPass" class="custom-input" placeholder="Parol" required>
+                    <button type="button" class="eye-btn" data-target="loginPass"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="wrong-alert hidden" id="userWrongAlert"><i class="fas fa-exclamation-circle"></i> Login yoki parol xato!</div>
+            <button type="submit" class="submit-btn full"><i class="fas fa-sign-in-alt"></i> Kirish</button>
+        </form>
+    </div>
+</div>
+
+<!-- USER PROFILE -->
+<div id="userProfileModal" class="modal">
+    <div class="modal-box wide">
+        <button class="modal-close" data-close="userProfileModal"><i class="fas fa-times"></i></button>
+        <h2><i class="fas fa-user-circle"></i> Profilim</h2>
+        <div class="profile-header">
+            <div class="avatar-upload-wrap">
+                <img class="avatar xl" id="profileAvatarImg" src="" alt="avatar">
+                <label for="avatarUpload" class="avatar-edit-btn"><i class="fas fa-camera"></i></label>
+                <input type="file" id="avatarUpload" accept="image/*" class="hidden">
+            </div>
+            <div class="profile-info">
+                <h3 id="profileName"></h3>
+                <p id="profileLoginDisplay"></p>
+                <span class="badge" id="profileRoleBadge"></span>
+            </div>
+        </div>
+        <div class="profile-stats">
+            <div class="p-stat"><i class="fas fa-eye"></i><span id="profileViews">0</span><p>Ko'rishlar</p></div>
+            <div class="p-stat"><i class="fas fa-heart"></i><span id="profileLikes">0</span><p>Layklar</p></div>
+            <div class="p-stat"><i class="fas fa-bookmark"></i><span id="profileSaved">0</span><p>Saqlangan</p></div>
+        </div>
+        <div class="profile-tabs">
+            <button class="tab-btn active" data-ptab="history">📜 Tarix</button>
+            <button class="tab-btn" data-ptab="liked">❤️ Yoqqanlar</button>
+            <button class="tab-btn" data-ptab="saved">💾 Saqlangan</button>
+        </div>
+        <div id="profileHistoryTab" class="ptab-content active"><div id="profileHistoryList"></div></div>
+        <div id="profileLikedTab" class="ptab-content"><div id="profileLikedList"></div></div>
+        <div id="profileSavedTab" class="ptab-content"><div id="profileSavedList"></div></div>
+        <div class="form-group" style="margin-top:20px">
+            <label class="custom-label"><i class="fas fa-key"></i> Parolni o'zgartirish</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <input type="password" id="userOldPass" class="custom-input" placeholder="Eski parol">
+                <input type="password" id="userNewPass" class="custom-input" placeholder="Yangi parol">
+                <button class="dash-add-btn" id="userChangePassBtn"><i class="fas fa-save"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD/EDIT VIDEO -->
+<div id="addVideoModal" class="modal">
+    <div class="modal-box wide">
+        <button class="modal-close" data-close="addVideoModal"><i class="fas fa-times"></i></button>
+        <h2 id="videoModalTitle"><i class="fas fa-film"></i> Video qo'shish</h2>
+        <form id="addVideoForm">
+            <input type="hidden" id="editVideoId">
+            <div class="form-row">
+                <div class="form-group flex1">
+                    <label class="custom-label">Sarlavha <span class="req">*</span></label>
+                    <input type="text" id="newVideoTitle" class="custom-input" placeholder="Video nomi..." required>
+                </div>
+                <div class="form-group">
+                    <label class="custom-label">Kategoriya <span class="req">*</span></label>
+                    <select id="newVideoCat" class="custom-input" required></select>
+                </div>
+            </div>
+            <!-- File Upload Zone -->
+            <div class="form-group" id="fileUploadGroup">
+                <label class="custom-label"><i class="fas fa-film"></i> Videoni qo'yish</label>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="newVideoFile" accept="video/*" class="file-hidden">
+                    <label for="newVideoFile" class="upload-zone-label">
+                        <div class="upload-pulse"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <p class="upload-title">Videoni bu yerga tashlang yoki tanlang</p>
+                        <p class="upload-hint">MP4, WebM — Max <span id="maxSizeLabel">500</span>MB</p>
+                    </label>
+                    <div class="upload-preview hidden" id="uploadPreview">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="upload-file-info">
+                            <span id="uploadFileName"></span>
+                            <span id="uploadFileSize" class="muted"></span>
+                        </div>
+                        <button type="button" class="icon-btn sm danger" id="removeFileBtn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="upload-progress hidden" id="uploadProgress">
+                    <div class="progress-track"><div class="progress-fill" id="uploadProgressBar"></div></div>
+                    <span id="uploadProgressText">0%</span>
+                </div>
+            </div>
+            <!-- YouTube Embed -->
+            <div class="form-group">
+                <label class="custom-label"><i class="fab fa-youtube"></i> YouTube Embed URL (ixtiyoriy)</label>
+                <input type="url" id="youtubeUrl" class="custom-input" placeholder="https://www.youtube.com/embed/VIDEO_ID">
+            </div>
+            <!-- Thumbnail -->
+            <div class="form-group">
+                <label class="custom-label"><i class="fas fa-image"></i> Thumbnail (ixtiyoriy)</label>
+                <div class="thumb-upload-wrap">
+                    <input type="file" id="thumbFile" accept="image/*" class="file-hidden">
+                    <label for="thumbFile" class="thumb-upload-label">
+                        <i class="fas fa-image"></i> Rasm tanlang
+                    </label>
+                    <img id="thumbPreviewImg" class="thumb-preview hidden" alt="thumb">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex1">
+                    <label class="custom-label">Status</label>
+                    <select id="newVideoStatus" class="custom-input">
+                        <option value="active">✅ Faol</option>
+                        <option value="inactive">⛔ Nofaol</option>
+                    </select>
+                </div>
+                <div class="form-group flex1">
+                    <label class="custom-label">Ko'rinish</label>
+                    <select id="newVideoVisibility" class="custom-input">
+                        <option value="public">🌍 Public</option>
+                        <option value="private">🔒 Private</option>
+                    </select>
+                </div>
+                <div class="form-group flex1">
+                    <label class="custom-label">Download</label>
+                    <select id="newVideoDownload" class="custom-input">
+                        <option value="1">✅ Ruxsat</option>
+                        <option value="0">🚫 Taqiqlangan</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn full" id="videoSubmitBtn">
+                <i class="fas fa-upload"></i> <span id="videoSubmitText">Qo'shish</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ADD/EDIT CATEGORY -->
+<div id="addCatModal" class="modal">
+    <div class="modal-box">
+        <button class="modal-close" data-close="addCatModal"><i class="fas fa-times"></i></button>
+        <h2 id="catModalTitle"><i class="fas fa-folder-plus"></i> Kategoriya</h2>
+        <form id="addCatForm">
+            <input type="hidden" id="editCatId">
+            <div class="form-group">
+                <label class="custom-label">Nomi <span class="req">*</span></label>
+                <input type="text" id="catName" class="custom-input" placeholder="Kategoriya nomi" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="custom-label">Rang</label>
+                    <input type="color" id="catColor" value="#3ea6ff" class="color-pick">
+                </div>
+                <div class="form-group flex1">
+                    <label class="custom-label">Ikonka (fa class)</label>
+                    <input type="text" id="catIcon" class="custom-input" placeholder="fab fa-html5">
+                </div>
+            </div>
+            <div class="icon-preview-row">
+                <span>Ko'rinish: </span>
+                <i id="catIconPreview" class="fab fa-html5" style="font-size:22px"></i>
+                <span id="catColorPreview" class="cat-pill" style="background:#3ea6ff">Kategoriya</span>
+            </div>
+            <div class="form-group">
+                <label class="custom-label">Tartibi</label>
+                <input type="number" id="catOrder" class="custom-input" value="0" min="0">
+            </div>
+            <div class="form-row">
+                <label class="toggle-opt"><input type="checkbox" id="catActive" checked> <span>Faol</span></label>
+                <label class="toggle-opt"><input type="checkbox" id="catVisible" checked> <span>Ko'rinadigan</span></label>
+            </div>
+            <button type="submit" class="submit-btn full"><i class="fas fa-save"></i> Saqlash</button>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- CONFIRM DIALOG -->
+<div id="confirmDialog" class="modal">
+    <div class="modal-box sm">
+        <div class="modal-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
+        <h2 id="confirmTitle">Tasdiqlash</h2>
+        <p id="confirmMessage"></p>
+        <div class="confirm-btns">
+            <button class="dash-add-btn danger" id="confirmYes">Ha, davom etish</button>
+            <button class="dash-add-btn" id="confirmNo">Bekor qilish</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
